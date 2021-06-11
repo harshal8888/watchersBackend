@@ -44,6 +44,15 @@ const options = {
 const swaggerSpecs = swaggerJsdoc(options);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
+//database Connection
+// require("./models");
+const db = require("./models");
+db.sequelize.sync();
+
+// db.sequelize.sync({ force: false }).then(() => {
+//   console.log("Drop and re-sync db.");
+// });
+
 app.use("/api", router);
 
 app.listen(5000, () => console.log("Running at 5000"));
