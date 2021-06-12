@@ -1,27 +1,39 @@
 // Route to login user. (In this case, create an token);
 const jwt = require("jsonwebtoken");
+const db = require("../models/index");
+var bcrypt = require("bcrypt");
+
+const Userregister = db.userregister;
 let refreshTokens = [];
 
 exports.loginUser = async (req, res) => {
   // validation
-  const user = req.body;
-  console.log(user);
+  const userData = req.body;
+  // console.log(user);
 
-  if (!user) {
+  if (!userData) {
     return res.status(404).json({ message: "Body empty" });
   }
-  if (user.username === "harshal" && user.password === "12345") {
-    let accessToken = jwt.sign(user, "access", { expiresIn: "20s" });
-    let refreshToken = jwt.sign(user, "refresh", { expiresIn: "7d" });
-    refreshTokens.push(refreshToken);
 
-    return res.status(201).json({
-      accessToken,
-      refreshToken,
+  Userregister.findOne({ where: { email: req.body.email } })
+    .then((user) => {
+      if (bcrypt.compareSync(req.body.password, user.password)) {
+        let userid = { email: req.body.email };
+        let accessToken = jwt.sign(userid, "access", { expiresIn: "20s" });
+        let refreshToken = jwt.sign(userid, "refresh", { expiresIn: "7d" });
+        refreshTokens.push(refreshToken);
+
+        return res.status(201).json({
+          accessToken,
+          refreshToken,
+        });
+      } else {
+        res.send("Wrong password");
+      }
+    })
+    .catch((err) => {
+      res.send("error" + err);
     });
-  } else {
-    return res.status(404).json({ message: "username password wrong" });
-  }
 };
 
 exports.refreshTokenfun = (req, res, next) => {

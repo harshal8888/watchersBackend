@@ -3,6 +3,7 @@ const Op = Sequelize.Op;
 const db = require("../models/index");
 const Userregister = db.userregister;
 const { responseMessage } = require("../response/message");
+var bcrypt = require("bcrypt");
 
 exports.userRegistration = async (req, res) => {
   // validation
@@ -11,7 +12,7 @@ exports.userRegistration = async (req, res) => {
   //   res.status(422).json({ errors: errors.array()[0].msg });
   //   return;
   // }
-  console.log(req.body);
+  // console.log(req.body);
   if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty!",
@@ -31,17 +32,30 @@ exports.userRegistration = async (req, res) => {
   };
 
   // Save in the databasse
-
-  Userregister.create(data)
-    .then((data) => {
-      res.json({
-        message: responseMessage.success.dataAdded,
-        result: data,
-      });
+  Userregister.findOne({ where: { email: req.body.email } })
+    .then((user) => {
+      console.log(user);
+      if (user) {
+        // console.log("sucess", typeof user);
+        res.send({ error: "user allready register" });
+      } else {
+        const hash = bcrypt.hashSync(data.password, 11);
+        data.password = hash;
+        Userregister.create(data)
+          .then((data) => {
+            res.json({
+              message: responseMessage.success.dataAdded,
+              result: data,
+            });
+          })
+          .catch((err) => {
+            res.status(500).send({
+              message: err.message,
+            });
+          });
+      }
     })
     .catch((err) => {
-      res.status(500).send({
-        message: err.message,
-      });
+      res.send("error:" + err);
     });
 };

@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
@@ -55,4 +57,4 @@ db.sequelize.sync();
 
 app.use("/api", router);
 
-app.listen(5000, () => console.log("Running at 5000"));
+app.listen(process.env.PORT, () => console.log("Running at 5000"));
