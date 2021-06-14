@@ -1,10 +1,10 @@
 var express = require("express");
 var router = express.Router();
 const auth = require("../controller/tokenAuth");
-
 const login = require("../controller/login");
 const profile = require("../controller/profile");
 const userRegister = require("../controller/userRegister");
+const product = require("../controller/product/product");
 
 // const refreshtoken = require("../controller/refreshToken");
 router.post("/login", login.loginUser);
@@ -17,6 +17,8 @@ router.post("/userregister", userRegister.userRegistration);
 
 // Protected route, can only be accessed when user is logged-in
 router.post("/profile", auth, profile.userProfile);
+//product add update delete
+router.post("/product", product.createProduct);
 
 /**
  * @swagger

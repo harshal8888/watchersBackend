@@ -26,6 +26,6 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.userregister = require("./userRegisterModel.js")(sequelize, Sequelize);
-// db.product = require("./productModel.js")(sequelize, Sequelize);
+db.product = require("./productModel.js")(sequelize, Sequelize);
 
 module.exports = db;

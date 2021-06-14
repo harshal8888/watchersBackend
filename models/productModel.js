@@ -8,8 +8,8 @@ module.exports = (sequelize, Sequelize) => {
     productName: {
       type: Sequelize.STRING,
     },
-    categoryId: {
-      type: Sequelize.INTEGER,
+    productDisciption: {
+      type: Sequelize.STRING,
     },
   });
 
